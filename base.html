@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="{{ lang or 'tr' }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}No.punq Dashboard{% endblock %}</title>
+
+    <!-- Critical Layout Fix (Prevents page explosion if CSS fails to load) -->
+    <!-- Core Design System -->
+    <link rel="stylesheet" href="/static/style.css?v={{ range(1, 10000)|random }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Meta Optimization -->
+    <meta name="description"
+        content="No.punq - Geleceğin profesyonel moderasyon ve otomasyon paneli. Sunucunuzu yapay zeka ile koruyun.">
+    <link rel="icon" type="image/png" href="/static/logo.jpg">
+</head>
+
+<body>
+    <!-- Global Top Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="/static/logo.jpg" alt="No.punq" class="logo-icon">
+                <span class="logo-text">No.punq</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> {{ t[lang].nav_home }}</a>
+                <a href="/dashboard" class="nav-link"><i class="fa-solid fa-gauge-high"></i> {{ t[lang].nav_dashboard
+                    }}</a>
+                <a href="https://discord.com/channels/1424434077557067838" target="_blank" class="nav-link">
+                    <i class="fa-solid fa-headset"></i> {{ t[lang].nav_support }}
+                </a>
+
+                <!-- Language Selector Engine -->
+                <div class="lang-switcher">
+                    <button class="lang-btn">
+                        {% if lang == 'en' %}
+                        <img src="https://flagcdn.com/w20/us.png" alt="EN"> <span>English</span>
+                        {% else %}
+                        <img src="https://flagcdn.com/w20/tr.png" alt="TR"> <span>Türkçe</span>
+                        {% endif %}
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; opacity: 0.5;"></i>
+                    </button>
+                    <div class="lang-dropdown">
+                        <a href="/set_lang/tr"><img src="https://flagcdn.com/w20/tr.png" width="20" alt="TR"> Türkçe</a>
+                        <a href="/set_lang/en"><img src="https://flagcdn.com/w20/us.png" width="20" alt="EN">
+                            English</a>
+                    </div>
+                </div>
+
+                {% if request.session.get('user') %}
+                <div style="display: flex; align-items: center; gap: 15px; margin-left: 10px;">
+                    <img src="https://cdn.discordapp.com/avatars/{{ request.session.get('user')['id'] }}/{{ request.session.get('user')['avatar'] }}.png"
+                        style="width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--glass-border);"
+                        alt="User">
+                    <a href="/logout" class="btn btn-outline" style="padding: 0.5rem 1rem; color: var(--danger);">
+                        <i class="fa-solid fa-power-off"></i>
+                    </a>
+                </div>
+                {% else %}
+                <a href="/login" class="btn btn-primary"><i class="fa-brands fa-discord"></i> {{ t[lang].nav_login
+                    }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Gateway -->
+    <main class="animate-fade-in" style="min-height: calc(100vh - 250px);">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Professional Footer -->
+    <footer
+        style="margin-top: 8rem; padding: 5rem 0; border-top: 1px solid var(--border-glass); background: rgba(0,0,0,0.3);">
+        <div class="container" style="text-align: center;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2rem;">
+                <div class="logo">
+                    <span class="logo-text" style="font-size: 1.4rem; opacity: 0.8;">No.punq Systems</span>
+                </div>
+
+                <div style="display: flex; gap: 3rem;">
+                    <a href="#" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;"
+                        class="nav-link">Kullanım Şartları</a>
+                    <a href="#" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;"
+                        class="nav-link">Gizlilik Politikası</a>
+                    <a href="#" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;"
+                        class="nav-link">Çerezler</a>
+                </div>
+
+                <div style="color: var(--text-muted); font-size: 0.85rem; max-width: 500px; opacity: 0.6;">
+                    &copy; 2026 No.punq. {{ t[lang].footer_rights }} {{ t[lang].footer_desc }}
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Language Switcher Click Toggle
+        const langSwitcher = document.querySelector('.lang-switcher');
+        const langBtn = document.querySelector('.lang-btn');
+
+        if (langBtn) {
+            langBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                langSwitcher.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!langSwitcher.contains(e.target)) {
+                    langSwitcher.classList.remove('active');
+                }
+            });
+        }
+
+        // --- 3D Tilt Engine ---
+        const cards = document.querySelectorAll('.card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+
+                // Dynamic Glint
+                const glintX = (x / rect.width) * 100;
+                const glintY = (y / rect.height) * 100;
+                card.style.background = `radial-gradient(circle at ${glintX}% ${glintY}%, rgba(255,255,255,0.08) 0%, var(--bg-card) 80%)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)`;
+                card.style.background = `var(--bg-card)`;
+            });
+        });
+    </script>
+</body>
+
+</html>
